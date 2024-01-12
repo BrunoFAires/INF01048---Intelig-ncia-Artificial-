@@ -48,23 +48,24 @@ class ValueIterationAgent(ValueEstimationAgent):
         states = mdp.getStates()
 
         for _ in range(iterations):
-          valuesCopy = self.values.copy()
+          values = self.values.copy()
             
           for i in range(len(states)):
-            finalValue = None
             state = states[i]
             actions = mdp.getPossibleActions(state)
+            finalValue = None
             
             for i in range(len(actions)):
               action = actions[i]
-              currentValue = self.computeQValueFromValues(state, action)
-              if finalValue < currentValue or finalValue is None:
-                finalValue = currentValue
+              actualValue = self.computeQValueFromValues(state, action)
+              if finalValue is None or finalValue < actualValue:
+                finalValue = actualValue
+            
             if finalValue is None:
               finalValue = 0
-            valuesCopy[state] = finalValue
+            values[state] = finalValue
           
-          self.values = valuesCopy
+          self.values = values
 
     def getValue(self, state):
         """
