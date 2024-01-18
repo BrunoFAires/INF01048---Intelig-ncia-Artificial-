@@ -4,7 +4,7 @@ class Nodo:
     """
     Implemente a classe Nodo com os atributos descritos na funcao init
     """
-    def __init__(self, estado:str, pai:Nodo, acao:str, custo:int):
+    def __init__(self, estado:str, pai, acao:str, custo:int):
         """
         Inicializa o nodo com os atributos recebidos
         :param estado:str, representacao do estado do 8-puzzle
@@ -13,7 +13,11 @@ class Nodo:
         :param custo:int, custo do caminho da raiz até este nó
         """
         # substitua a linha abaixo pelo seu codigo
-        raise NotImplementedError
+        self.estado = estado
+        self.pai = pai
+        self.acao = acao
+        self.custo = custo
+
 
 
 def sucessor(estado:str)->Set[Tuple[str,str]]:
@@ -25,7 +29,7 @@ def sucessor(estado:str)->Set[Tuple[str,str]]:
     :return:
     """
     result = set()
-    pos_empty = estado.index('_')
+    pos_empty = estado.find('_')
 
     # esquerda
     if(pos_empty % 3 != 0):
@@ -35,6 +39,11 @@ def sucessor(estado:str)->Set[Tuple[str,str]]:
     if(pos_empty + 3 < len(estado)):
         result.add(('abaixo', estado[0:pos_empty] + estado[pos_empty + 3] + estado[pos_empty + 1:pos_empty+3] + '_' + estado[pos_empty+4:])) 
     
+    # acima
+    if(pos_empty - 3 > 0):
+        result.add(('acima', estado[0:pos_empty - 3] + '_' + estado[pos_empty - 2:pos_empty] + estado[pos_empty-3] + estado[pos_empty + 1:])) 
+    
+
     # direita
     if(pos_empty not in [2, 5, 8]):
         result.add(('direita', estado[:pos_empty] + estado[pos_empty + 1] + '_' + estado[(pos_empty + 2):])) 
@@ -50,7 +59,13 @@ def expande(nodo:Nodo)->Set[Nodo]:
     :return:
     """
     # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    graph = set()
+
+    children = sucessor(nodo.estado)
+    for child in children:
+        graph.add(Nodo(child[1], nodo, child[0], nodo.custo + 1))
+
+    return graph
 
 
 def astar_hamming(estado:str)->list[str]:
