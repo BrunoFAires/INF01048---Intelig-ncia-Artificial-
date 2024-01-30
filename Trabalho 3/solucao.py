@@ -1,4 +1,5 @@
 from typing import Iterable, Set, Tuple
+from queue import PriorityQueue
 
 class Nodo:
     """
@@ -17,6 +18,10 @@ class Nodo:
         self.pai = pai
         self.acao = acao
         self.custo = custo
+
+    def __lt__(self, other):
+    # Método de comparação para suportar a fila de prioridades
+        return self.custo < other.custo
 
 
 
@@ -70,39 +75,36 @@ def expande(nodo:Nodo)->Set[Nodo]:
 def reconstruir_caminho(node:Nodo):
     caminho = []
     while node:
-        caminho.append(node.acao)
+        if(node.acao != None):
+            caminho.append(node.acao)
         node = node.pai
+    caminho.reverse()
     return caminho
 
-def hammingDistance(F:list[Nodo]) -> int:
+def hammingDistance(f:Nodo) -> int:
     finalState = '12345678_'
-    distance = None
-    i = 0
-    position = 0
-    for f in F:
-        actualDistance = sum(c1 != c2 for c1, c2 in zip(f.estado, finalState)) + f.custo
-        if (distance == None or actualDistance < distance):
-            distance = actualDistance
-            position = i
-        i += 1
-    return position
+    return sum(c1 != c2 for c1, c2 in zip(f.estado, finalState))
 
 def astar_hamming(estado:str)->list[str]:
     finalState = '12345678_'
-    X = [] ##Conjunto de Explorados
-    F: list[Nodo] = []
-    F.append(Nodo(estado, None, None, 1))
-    while F:
-        currentNode = F.pop(hammingDistance(F))
-        if(currentNode.estado == finalState):
-            return reconstruir_caminho(currentNode)
-        if(currentNode not in X):
-            X.append(currentNode)
-            a = expande(currentNode)
+    X = set() ##Conjunto de Explorados
+    F = PriorityQueue()
+    F.put((0, Nodo(estado, None, None, 0)))
+
+    while not F.empty():
+        currentNode = F.get()
+        if(currentNode[1].estado == finalState):
+            return reconstruir_caminho(currentNode[1])
+        if(currentNode[1].estado not in X):
+            X.add(currentNode[1].estado)
+            a = expande(currentNode[1])
             childrens = list(a)
             for child in childrens:
-                if(child not in X):
-                    F.append(child)
+                if(child.estado not in X):
+                    custo = child.custo + hammingDistance(child)
+                    child.custo = custo;
+                    F.put((custo, child))
+    
     return None
 
 
