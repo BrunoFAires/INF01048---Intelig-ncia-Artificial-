@@ -107,6 +107,15 @@ def astar_hamming(estado:str)->list[str]:
     
     return None
 
+def distanceManhattan(currentState:Nodo) -> int:
+    finalState = '12345678_'
+    currentStateX = int(currentState.estado.find('_')) / 3 #Calcula a posição X do espaço em branco corrente
+    currentStateY = int(currentState.estado.find('_')) % 3 #Calcula a posição Y do espaço em branco corrente
+    finalStateX = int(finalState.find('_')) / 3 #Calcula a posição X do espaço em branco destino
+    finalStateY = int(finalState.find('_')) % 3 #Calcula a posição Y do espaço em branco destino
+    return abs(int(currentStateX - finalStateX)) + abs(int(currentStateY - finalStateY))
+
+
 
 def astar_manhattan(estado:str)->list[str]:
     """
@@ -118,7 +127,25 @@ def astar_manhattan(estado:str)->list[str]:
     :return:
     """
     # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    finalState = '12345678_'
+    X = set() ##Conjunto de Explorados
+    F = PriorityQueue()
+    F.put((0, Nodo(estado, None, None, 0)))
+
+    while not F.empty():
+        currentNode = F.get()
+        if(currentNode[1].estado == finalState):
+            return reconstruir_caminho(currentNode[1])
+        if(currentNode[1].estado not in X):
+            X.add(currentNode[1].estado)
+            a = expande(currentNode[1])
+            childrens = list(a)
+            for child in childrens:
+                if(child.estado not in X):
+                    custo = child.custo + distanceManhattan(child)
+                    child.custo = custo;
+                    F.put((custo, child))
+    return None
 
 #opcional,extra
 def bfs(estado:str)->list[str]:
