@@ -109,10 +109,10 @@ def astar_hamming(estado:str)->list[str]:
 
 def distanceManhattan(currentState:Nodo) -> int:
     finalState = '12345678_'
-    currentStateX = int(currentState.estado.find('_')) / 3 #Calcula a posição X do espaço em branco corrente
-    currentStateY = int(currentState.estado.find('_')) % 3 #Calcula a posição Y do espaço em branco corrente
-    finalStateX = int(finalState.find('_')) / 3 #Calcula a posição X do espaço em branco destino
-    finalStateY = int(finalState.find('_')) % 3 #Calcula a posição Y do espaço em branco destino
+    currentStateX = int(currentState.estado.find('_') / 3) #Calcula a posição X do espaço em branco corrente
+    currentStateY = int(currentState.estado.find('_') % 3) #Calcula a posição Y do espaço em branco corrente
+    finalStateX = int(finalState.find('_') / 3) #Calcula a posição X do espaço em branco destino
+    finalStateY = int(finalState.find('_') % 3) #Calcula a posição Y do espaço em branco destino
     return abs(int(currentStateX - finalStateX)) + abs(int(currentStateY - finalStateY))
 
 
