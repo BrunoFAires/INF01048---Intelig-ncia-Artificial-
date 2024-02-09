@@ -25,10 +25,20 @@ def make_move(state: GameState) -> Tuple[int, int]:
     # uma vez que o jogo tem profundidade maxima 9. 
     # Preencha a funcao utility com o valor de um estado terminal e passe-a como funcao de avaliação para seu minimax_move
 
-    return random.choice(range(3)), random.choice(range(3))
+    return minimax_move(state, max_depth=-1, eval_func=utility)
 
 def utility(state, player:str) -> float:
     """
     Retorna a utilidade de um estado (terminal) 
     """
-    return 0   # substitua pelo seu codigo
+    winner = state.winner()
+
+    if winner == player:
+        # The current player is the winner
+        return 1.0
+    elif winner is not None:
+        # The current player is the loser
+        return -1.0
+    else:
+        # The game is a draw
+        return 0.0
