@@ -23,7 +23,7 @@ def make_move(state) -> Tuple[int, int]:
     # Remova-o e coloque uma chamada para o minimax_move (que vc implementara' no modulo minimax).
     # A chamada a minimax_move deve receber sua funcao evaluate como parametro.
 
-    return random.choice([(2, 3), (4, 5), (5, 4), (3, 2)])
+    return minimax_move(state, max_depth=5, eval_func=evaluate_custom)
 
 
 def evaluate_custom(state, player:str) -> float:
@@ -34,4 +34,15 @@ def evaluate_custom(state, player:str) -> float:
     :param state: state to evaluate (instance of GameState)
     :param player: player to evaluate the state for (B or W)
     """
-    return 0    # substitua pelo seu codigo
+    max_player = player
+    min_player = 'B' if player == 'W' else 'W'
+    max_player_mobility = len(state.board.legal_moves(player))
+    min_player_mobility = len(state.board.legal_moves(min_player))
+
+    total_mobility = max_player_mobility +  min_player_mobility
+    
+    if total_mobility != 0:
+        return 100 * (max_player_mobility - min_player_mobility) / total_mobility
+    else:
+        return 0  # Or you can return a special value to indicate the condition when both players have no legal moves.
+

@@ -23,7 +23,7 @@ def make_move(state) -> Tuple[int, int]:
     # Remova-o e coloque uma chamada para o minimax_move (que vc implementara' no modulo minimax).
     # A chamada a minimax_move deve receber sua funcao evaluate como parametro.
 
-    return minimax_move(state, max_depth=64, eval_func=evaluate_count)
+    return minimax_move(state, max_depth=5, eval_func=evaluate_count)
 
 
 def evaluate_count(state, player:str) -> float:
@@ -35,7 +35,7 @@ def evaluate_count(state, player:str) -> float:
     :param player: player to evaluate the state for (B or W)
     """
     
-    max_player_pieces = sum(row.count(player) for row in state.get_board().tiles)
+    max_player_pieces = state.board.num_pieces(player) 
     min_player = 'B' if player == 'W' else 'W'
-    min_player_pieces = sum(row.count(min_player) for row in state.get_board().tiles)
+    min_player_pieces = state.board.num_pieces(min_player) 
     return max_player_pieces - min_player_pieces
